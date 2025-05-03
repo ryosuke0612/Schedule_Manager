@@ -1,22 +1,94 @@
+<!--
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEST</title>
-
-    <!-- cssの読み込み -->
-    <link rel="stylesheet" href="static/css/style.css">
-
+    <title>Flask サンプルページ</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f5f5f5;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-
-    <h1>successful</h1>
-    <button><a href="/test">TEST</a></button>
-    
-    <!-- jsの読み込み -->
-    <script src="static/js/script.js"></script>
-
+    <h1>こんにちは、Flask!</h1>
+    <p>これはFlaskでレンダリングされたHTMLページです。</p>
 </body>
 </html>
+
+-->
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>イベント一覧</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>イベント一覧</h1>
+
+
+    <!-- イベント登録ボタン -->
+
+    <br>
+    <form action="{{ url_for('register_event') }}" method="GET">
+        <button type="submit">イベント登録</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>日時</th>
+                <th>イベント</th>
+                <th>出席</th>
+                <th>欠席</th>
+                <th>遅刻</th>
+                <th>出欠登録</th>
+                <th>削除</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+            <tr>
+                <td>{{ event.date.strftime('%Y年%m月%d日') }}</td>
+                <td>{{ event.title }}</td>
+                <td>{{ event.attendance | selectattr('status', 'equalto', '出席') | list | length }}</td>
+                <td>{{ event.attendance | selectattr('status', 'equalto', '欠席') | list | length }}</td>
+                <td>{{ event.attendance | selectattr('status', 'equalto', '遅刻') | list | length }}</td>
+                <td>
+                    <form action="{{ url_for('event_details_or_attendance', event_id=event.id) }}" method="get">
+                        <button type="submit">詳細と出欠登録</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="{{ url_for('delete_event', event_id=event.id) }}" method="POST">
+                        <button type="submit" onclick="return confirm('本当に削除しますか?')">削除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>

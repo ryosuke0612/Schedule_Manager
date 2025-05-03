@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>イベント登録</title>
+</head>
+<body>
+    <h1>新しいイベントの登録</h1>
+
+    <form action="{{ url_for('register_event') }}" method="POST">
+        <label for="title">イベントタイトル:</label>
+        <input type="text" name="title" id="title" required>
+        
+        <label for="date">イベント日付:</label>
+        <input type="date" name="date" id="date" required>
+        
+        <label for="hours">イベント時刻（時間）:</label>
+        <select name="hours" id="hours" required>
+            <!-- JavaScriptで時間の選択肢を追加 -->
+        </select>
+        
+        <label for="minutes">イベント時刻（分）:</label>
+        <select name="minutes" id="minutes" required>
+            <!-- JavaScriptで5分単位の選択肢を追加 -->
+        </select>
+        
+        <button type="submit">登録</button>
+        
+        <!-- メッセージ表示エリア -->
+        <div id="message" style="color: green; margin-top: 20px;"></div>
+        
+        <script>
+            // 時間の選択肢を動的に生成する関数
+            function generateHourOptions() {
+                const hoursSelect = document.getElementById('hours');
+                for (let h = 0; h < 24; h++) {
+                    const option = document.createElement('option');
+                    const hour = String(h).padStart(2, '0');
+                    option.value = hour;
+                    option.textContent = hour;
+                    hoursSelect.appendChild(option);
+                }
+            }
+        
+            // 5分単位の分の選択肢を動的に生成する関数
+            function generateMinuteOptions() {
+                const minutesSelect = document.getElementById('minutes');
+                for (let m = 0; m < 60; m += 5) {
+                    const option = document.createElement('option');
+                    const minute = String(m).padStart(2, '0');
+                    option.value = minute;
+                    option.textContent = minute;
+                    minutesSelect.appendChild(option);
+                }
+            }
+        
+            // ページ読み込み時に選択肢を生成
+            window.addEventListener('load', function () {
+                generateHourOptions();
+                generateMinuteOptions();
+        
+                // フォームの入力内容を保持
+                const params = new URLSearchParams(window.location.search);
+                document.getElementById('title').value = params.get('title') || '';
+                document.getElementById('date').value = params.get('date') || '';
+                document.getElementById('hours').value = params.get('hours') || '00';
+                document.getElementById('minutes').value = params.get('minutes') || '00';
+        
+                // 登録完了メッセージを表示
+                const message = params.get('message');
+                if (message) {
+                    document.getElementById('message').textContent = message;
+                }
+            });
+        </script>
+
+    </form>
+
+    <!-- ホームに戻るボタン -->
+    <form action="{{ url_for('index') }}" method="get">
+        <button type="submit">ホームに戻る</button>
+    </form>
+</body>
+</html>

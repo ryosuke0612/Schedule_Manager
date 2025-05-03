@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ event.title }} - 詳細と出欠登録</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ event.title }} - 詳細と出欠登録</h1>
+    <p>日時: {{ event.date.strftime('%Y-%m-%d %H:%M') }}</p>
+
+    <h2>出欠登録</h2>
+    <form method="POST">
+        <label for="user_name">選手名を入力してください:</label>
+        <input type="text" name="user_name" id="user_name" required>
+
+        <label for="status">出席状況を選んでください:</label>
+        <select name="status" id="status" required>
+            <option value="出席">出席</option>
+            <option value="欠席">欠席</option>
+            <option value="遅刻">遅刻</option>
+        </select>
+
+        <button type="submit">登録</button>
+    </form>
+
+    <h2>現在の出欠情報</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>選手名</th>
+                <th>出席状況</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attendance in attendances %}
+            <tr>
+                <td>{{ attendance.user.name }}</td>
+                <td>{{ attendance.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- ホームに戻るボタン -->
+    <form action="{{ url_for('index') }}" method="get">
+        <button type="submit">ホームに戻る</button>
+    </form>
+</body>
+</html>
